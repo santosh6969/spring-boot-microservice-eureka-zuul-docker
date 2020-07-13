@@ -1,5 +1,15 @@
 version: '3'
 services:
+  logstash:
+    image: docker.elastic.co/logstash/logstash:7.8.0
+    container_name: service-logstash
+    command: logstash -f /etc/logstash/conf.d/logstash.conf
+    volumes:
+      - .containerized-logstash/config:/usr/share/logstash/config:ro
+      - .containerized-logstash/pipeline:/usr/share/logstash/pipeline:ro
+    ports:
+      - "5000:5000"
+      - "12204:12204"
 
   discovery:
     image: tanerdiler/service-discovery
@@ -44,6 +54,7 @@ services:
       - discovery
     links:
       - discovery:discovery
+
   accounts:
     image: tanerdiler/service-accounts-api
     container_name: service-accounts
